@@ -53,7 +53,7 @@ void WMLKit::mountCustomMods() {
 	string version = Utils::getWOWSversion();
 	for (string currentFolder : folderList) {
 		printf("Mounting mod : %s\n", currentFolder.c_str());
-		Utils::runCMD(R"(xcopy ".\res_custom\)" + currentFolder + R"(" /E /Y "res_mods\)" + version + R"(")");
+		Utils::runCMD(R"(echo d|xcopy ".\res_custom\)" + currentFolder + R"(" /E /Y ".\res_mods\)" + version + R"(")");
 	}
 }
 
