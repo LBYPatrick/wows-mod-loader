@@ -53,16 +53,16 @@ void WMLKit::mountCustomMods() {
 	string version = Utils::getWOWSversion();
 
 	int currentModCount = 0;
-	int totalModCount = folderList.size() - 1;
+	int totalModCount = folderList.size();
 
 	for (string currentFolder : folderList) {
 		
-		currentModCount++;
-		
-		if(visualizing)
+		if(this->visualizing)
 		Utils::showPercentage(currentModCount, totalModCount, "Mounting Mod: " + currentFolder);
 
 		Utils::runCMD(R"(echo d|xcopy ".\res_custom\)" + currentFolder + R"(" /E /Y ".\res_mods\)" + version + R"(")");
+
+		currentModCount += 1;
 	}
 }
 
@@ -71,18 +71,17 @@ void WMLKit::mountDuoWanMods() {
 	readFileList(R"(.\res_wsp\filemap.xml)");
 
 	int currentModCount = 0;
-	int totalModCount = fileList.size() - 1;
+	int totalModCount = fileList.size();
 
 	for (FileInfo currentFile : fileList) {
 		
-		currentModCount++;
-		
-		if (visualizing) {
+		if (this->visualizing) {
 			string message = "Mounting Duowan Box Mods...";
 			Utils::showPercentage(currentModCount, totalModCount, message);
 		}
 
 		Utils::runCMD(R"(echo f|xcopy "res_wsp\)" + currentFile.postPath + R"(" /E /Y "res_mods\)" + currentFile.prePath + R"(")");
+	
+		currentModCount++;
 	}
-
 }

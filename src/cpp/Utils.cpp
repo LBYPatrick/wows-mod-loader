@@ -112,12 +112,15 @@ void Utils::showPercentage(int current, int total, string message) {
 	
 	system("cls");
 		
+		const int barLength = 50;
+		const int leftPercent  = double(current + 1) / double(total) * barLength;
+		const int rightPercent = barLength - leftPercent; 
+
 		printf("%s\n[", message.c_str());
 		current++;
 
-		for (int i = 0; i <= (current); i++)        printf(">");
-		for (int i = 0; i < (total - current); i++) printf(" ");
-		if (current + (total - current) < total)    printf(" ");
+		for (int i = 0; i <  leftPercent ; i++)        printf(">");
+		for (int i = 0; i <  rightPercent; i++)        printf(" ");
 		
 		printf("] %d / %d", current, total);
 		
