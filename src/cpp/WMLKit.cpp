@@ -51,17 +51,37 @@ void WMLKit::mountCustomMods() {
 	vector<string> folderList;
 	Utils::getFolderList(string(R"(.\res_custom)"), folderList);
 	string version = Utils::getWOWSversion();
+
+	int currentModCount = 0;
+	int totalModCount = folderList.size() - 1;
+
 	for (string currentFolder : folderList) {
-		printf("Mounting mod : %s\n", currentFolder.c_str());
+		
+		currentModCount++;
+		
+		if(visualizing)
+		Utils::showPercentage(currentModCount, totalModCount, "Mounting Mod: " + currentFolder);
+
 		Utils::runCMD(R"(echo d|xcopy ".\res_custom\)" + currentFolder + R"(" /E /Y ".\res_mods\)" + version + R"(")");
 	}
 }
 
 void WMLKit::mountDuoWanMods() {
+	
 	readFileList(R"(.\res_wsp\filemap.xml)");
 
+	int currentModCount = 0;
+	int totalModCount = fileList.size() - 1;
+
 	for (FileInfo currentFile : fileList) {
-		//printf(currentFile.postPath.c_str());
+		
+		currentModCount++;
+		
+		if (visualizing) {
+			string message = "Mounting Duowan Box Mods...";
+			Utils::showPercentage(currentModCount, totalModCount, message);
+		}
+
 		Utils::runCMD(R"(echo f|xcopy "res_wsp\)" + currentFile.postPath + R"(" /E /Y "res_mods\)" + currentFile.prePath + R"(")");
 	}
 

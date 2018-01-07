@@ -13,6 +13,7 @@ private:
 	void addFile(FileInfo i);
 
 public:
+	bool visualizing = true;
 	vector<FileInfo> fileList;
 	void readFileList(string filemapPath);
 	void mountCustomMods();

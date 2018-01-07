@@ -8,4 +8,5 @@ namespace Utils {
 	void   renameFile(string pre, string post);
 	string getWOWSversion();
 	string getRawFileName(string &fullPath);
+	void   showPercentage(int current, int total, string message);
 };

@@ -107,3 +107,19 @@ string Utils::getWOWSversion() {
 void Utils::renameFile(string pre, string post) {
 	runCMD("ren \"" + pre + "\" " + getRawFileName(post));
 }
+
+void Utils::showPercentage(int current, int total, string message) {
+	
+	system("cls");
+		
+		printf("%s\n[", message.c_str());
+		current++;
+
+		for (int i = 0; i <= (current); i++)        printf(">");
+		for (int i = 0; i < (total - current); i++) printf(" ");
+		if (current + (total - current) < total)    printf(" ");
+		
+		printf("] %d / %d", current, total);
+		
+		if (current == total) printf("\n\n\n");
+}
