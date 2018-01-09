@@ -73,6 +73,8 @@ void WMLKit::mountDuoWanMods() {
 	int currentModCount = 0;
 	int totalModCount = fileList.size();
 
+	string versionNumber = Utils::getWOWSversion();
+
 	for (FileInfo currentFile : fileList) {
 		
 		if (this->visualizing) {
@@ -80,8 +82,27 @@ void WMLKit::mountDuoWanMods() {
 			Utils::showPercentage(currentModCount, totalModCount, message);
 		}
 
-		Utils::runCMD(R"(echo f|xcopy "res_wsp\)" + currentFile.postPath + R"(" /E /Y "res_mods\)" + currentFile.prePath + R"(")");
+		Utils::runCMD(R"(echo f|xcopy "res_wsp\)" 
+		
+		+ currentFile.postPath + R"(" /E /Y "res_mods\)" 
+		+ versionNumber 
+		+ R"(\)" 
+		+ removeVersionNumber(currentFile.prePath) 
+		+ R"(")");
 	
 		currentModCount++;
 	}
+}
+
+string WMLKit::removeVersionNumber(string originPath) {
+
+	string returnBuffer;
+	int startPosition = originPath.find_first_of(R"(\)") + 1;
+	int endPosition   = originPath.size() - 1;
+
+	for(int i = startPosition; i <= endPosition; ++i) {
+		returnBuffer += originPath[i];
+	}
+
+	return returnBuffer;
 }
