@@ -58,7 +58,7 @@ void WMLKit::mountCustomMods() {
 	for (string currentFolder : folderList) {
 		
 		if(this->visualizing)
-		Utils::showPercentage(currentModCount, totalModCount, "Mounting Mod: " + currentFolder);
+		Utils::showPercentage(currentModCount, totalModCount, "Mounting Mod: \"" + currentFolder + "\"");
 
 		Utils::runCMD(R"(echo d|xcopy ".\res_custom\)" + currentFolder + R"(" /E /Y ".\res_mods\)" + version + R"(")");
 

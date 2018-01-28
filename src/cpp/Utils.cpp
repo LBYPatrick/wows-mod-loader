@@ -28,11 +28,13 @@ void Utils::getFolderList(string path, vector<string> & folderList) {
 
 	struct _finddata_t fileInfo;
 	string workingPath = path + R"(\*)";
+	int folderCount = 0;
 	long hFile = _findfirst( workingPath.c_str(), &fileInfo);
 	
 	do {
 		if (fileInfo.attrib & _A_SUBDIR) {
-			if (string(fileInfo.name).find(".") != string::npos || string(fileInfo.name).find("..") != string ::npos) continue; //Skip if it's parent-folder or current folder
+			folderCount ++;
+			if (folderCount <= 2) continue; //Skip if it's parent-folder or current folder
 			else folderList.push_back(fileInfo.name);
 		}
 
