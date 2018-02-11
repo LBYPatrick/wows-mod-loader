@@ -10,13 +10,13 @@ struct FileInfo {
 
 class WMLKit {
 private:
-	void addFile(FileInfo i);
-	string removeVersionNumber(string originPath);
+	void AddFile(FileInfo i);
+	string RemoveVersionNumber(string originPath);
 public:
 	bool visualizing = true;
-	vector<FileInfo> fileList;
-	void readFileList(string filemapPath);
-	void mountCustomMods();
-	void mountDuoWanMods();
+	vector<FileInfo> file_list;
+	void ReadFileList(string filemapPath);
+	void MountCustomMods();
+	void MountDuoWanMods();
 	
 };

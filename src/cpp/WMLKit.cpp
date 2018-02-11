@@ -3,98 +3,98 @@
 ifstream reader;
 ofstream writer;
 
-void WMLKit::addFile(FileInfo i) {
-	fileList.push_back(i);
+void WMLKit::AddFile(FileInfo i) {
+	file_list.push_back(i);
 }
 
-void WMLKit::readFileList(string filemapPath) {
-	string readBuffer;
-	FileInfo fileInfoBuffer;
+void WMLKit::ReadFileList(string filemapPath) {
+	string read_buffer;
+	FileInfo file_info_buffer;
 	reader.open(filemapPath.c_str());
 	
-	while (getline(reader, readBuffer)) {
+	while (getline(reader, read_buffer)) {
 		
-		if (readBuffer.find("</Mapping>") != string::npos) {
-			addFile(fileInfoBuffer);
-			fileInfoBuffer = {"",""};
+		if (read_buffer.find("</Mapping>") != string::npos) {
+			AddFile(file_info_buffer);
+			file_info_buffer = {"",""};
 			continue;
 		}
-		else if (readBuffer.find("SourceFile") != string::npos) {
-			int startPosition = readBuffer.find_first_of('"') + 1;
-			int endPosition = readBuffer.find_last_of('"') - 1;
+		else if (read_buffer.find("SourceFile") != string::npos) {
+			int startPosition = read_buffer.find_first_of('"') + 1;
+			int endPosition = read_buffer.find_last_of('"') - 1;
 
 			for (int i = startPosition; i <= endPosition; ++i) {
-				if (readBuffer[i] == '/') {
-					fileInfoBuffer.prePath += R"(\)";
+				if (read_buffer[i] == '/') {
+					file_info_buffer.prePath += R"(\)";
 					continue;
 				}
-				fileInfoBuffer.prePath += readBuffer[i];
+				file_info_buffer.prePath += read_buffer[i];
 			}
 		}
-		else if (readBuffer.find("DestFile") != string::npos) {
-			int startPosition = readBuffer.find_first_of("<DestFile>") + 10;
-			int endPosition = readBuffer.find_last_of("</DestFile>") - 11;
+		else if (read_buffer.find("DestFile") != string::npos) {
+			int startPosition = read_buffer.find_first_of("<DestFile>") + 10;
+			int endPosition = read_buffer.find_last_of("</DestFile>") - 11;
 			
 			for (int i = startPosition; i <= endPosition; ++i) {
-				if (readBuffer[i] == '/') {
-					fileInfoBuffer.postPath += R"(\)";
+				if (read_buffer[i] == '/') {
+					file_info_buffer.postPath += R"(\)";
 					continue;
 				}
-				fileInfoBuffer.postPath += readBuffer[i];
+				file_info_buffer.postPath += read_buffer[i];
 			}
 		}		
 	}
 	reader.close();
 }
 
-void WMLKit::mountCustomMods() {
-	vector<string> folderList;
-	Utils::getFolderList(string(R"(.\res_custom)"), folderList);
-	string version = Utils::getWOWSversion();
+void WMLKit::MountCustomMods() {
+	vector<string> folder_list;
+	Utils::GetFolderList(string(R"(.\res_custom)"), folder_list);
+	string version = Utils::GetWowsVersion();
 
-	int currentModCount = 0;
-	int totalModCount = folderList.size();
+	const int totalModCount = folder_list.size();
 
-	for (string currentFolder : folderList) {
-		
-		if(this->visualizing)
-		Utils::showPercentage(currentModCount, totalModCount, "Mounting Mod: \"" + currentFolder + "\"");
+	if(this->visualizing) printf("Mounting Custom Mods...\n");
 
-		Utils::runCMD(R"(echo d|xcopy ".\res_custom\)" + currentFolder + R"(" /E /Y ".\res_mods\)" + version + R"(")");
+	for (int i = 0; i < totalModCount; ++i) {
 
-		currentModCount += 1;
-	}
-}
-
-void WMLKit::mountDuoWanMods() {
-	
-	readFileList(R"(.\res_wsp\filemap.xml)");
-
-	int currentModCount = 0;
-	int totalModCount = fileList.size();
-
-	string versionNumber = Utils::getWOWSversion();
-
-	for (FileInfo currentFile : fileList) {
-		
-		if (this->visualizing) {
-			string message = "Mounting Duowan Box Mods...";
-			Utils::showPercentage(currentModCount, totalModCount, message);
+		if(this->visualizing){
+			Utils::PercentageBar(i+1, totalModCount);
 		}
 
-		Utils::runCMD(R"(echo f|xcopy "res_wsp\)" 
-		
-		+ currentFile.postPath + R"(" /E /Y "res_mods\)" 
-		+ versionNumber 
-		+ R"(\)" 
-		+ removeVersionNumber(currentFile.prePath) 
-		+ R"(")");
-	
-		currentModCount++;
+		Utils::RunCommand(R"(echo d|xcopy ".\res_custom\)" + folder_list[i] + R"(" /E /Y ".\res_mods\)" + version + R"(")");
 	}
+	if(this->visualizing) printf("\n");
 }
 
-string WMLKit::removeVersionNumber(string originPath) {
+void WMLKit::MountDuoWanMods() {
+	
+	ReadFileList(R"(.\res_wsp\filemap.xml)");
+
+	const int totalModCount = file_list.size();
+
+	const string versionNumber = Utils::GetWowsVersion();
+
+	if(this->visualizing) printf("Mounting Duowan Box Mods...\n");
+
+	for (int i = 0; i < totalModCount; ++i) {
+		
+		if (this->visualizing) {
+			Utils::PercentageBar(i+1, totalModCount);
+		}
+
+		Utils::RunCommand(R"(echo f|xcopy "res_wsp\)"
+		
+		+file_list[i].postPath + R"(" /E /Y "res_mods\)"
+		+ versionNumber 
+		+ R"(\)" 
+		+ RemoveVersionNumber(file_list[i].prePath)
+		+ R"(")");
+	}
+	if(this->visualizing) printf("\n");
+}
+
+string WMLKit::RemoveVersionNumber(const string originPath) {
 
 	string returnBuffer;
 	int startPosition = originPath.find_first_of(R"(\)") + 1;

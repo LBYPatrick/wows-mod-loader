@@ -3,10 +3,10 @@
 #include "includes.h"
 
 namespace Utils {
-    void   runCMD(string command);
-	void   getFolderList(string path,vector<string> & folderList);
-	void   renameFile(string pre, string post);
-	string getWOWSversion();
-	string getRawFileName(string &fullPath);
-	void   showPercentage(int current, int total, string message);
+    void   RunCommand(string command);
+	void   GetFolderList(string path,vector<string> & folder_list);
+	void   RenameFile(string old_name, string new_name);
+	string GetWowsVersion();
+	string GetRawFileName(string &full_path);
+	void   PercentageBar(int current, int total);
 };

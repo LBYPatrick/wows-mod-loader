@@ -2,7 +2,7 @@
 #include "Utils.h"
 #include "includes.h"
 
-string Utils::getRawFileName(string &fullPath) {
+string Utils::GetRawFileName(string &fullPath) {
     int startPosition = 0;
     int endPosition = fullPath.length()-1;
     string returnBuffer;
@@ -24,26 +24,26 @@ string Utils::getRawFileName(string &fullPath) {
 }
 
 //From CSDN, rewritten for a reverse usage (originally for iterate files)
-void Utils::getFolderList(string path, vector<string> & folderList) {
+void Utils::GetFolderList(string path, vector<string> & folder_list) {
 
-	struct _finddata_t fileInfo;
-	string workingPath = path + R"(\*)";
+	struct _finddata_t file_info;
+	const string workingPath = path + R"(\*)";
 	int folderCount = 0;
-	long hFile = _findfirst( workingPath.c_str(), &fileInfo);
+	long hFile = _findfirst(workingPath.c_str(), &file_info);
 	
 	do {
-		if (fileInfo.attrib & _A_SUBDIR) {
+		if (file_info.attrib & _A_SUBDIR) {
 			folderCount ++;
 			if (folderCount <= 2) continue; //Skip if it's parent-folder or current folder
-			else folderList.push_back(fileInfo.name);
+			else folder_list.push_back(file_info.name);
 		}
 
-	} while (_findnext(hFile, &fileInfo) == 0);
+	} while (_findnext(hFile, &file_info) == 0);
 
 }
 
 //From MSDN
-void Utils::runCMD(string command) {
+void Utils::RunCommand(string command) {
     command = R"(cmd /q /c ")" + command + R"(")";
 
 	TCHAR *commandInTCHAR = new TCHAR[command.size() + 1];
@@ -82,21 +82,21 @@ void Utils::runCMD(string command) {
 	CloseHandle(pi.hThread);
 }
 
-string Utils::getWOWSversion() {
+string Utils::GetWowsVersion() {
 	
 	ifstream reader;
-	string readBuffer;
+	string read_buffer;
 
 	reader.open("paths.xml");
 
-	while (getline(reader, readBuffer)) {
-		if (readBuffer.find("<Path>res_mods") != string::npos) {
+	while (getline(reader, read_buffer)) {
+		if (read_buffer.find("<Path>res_mods") != string::npos) {
 			string returnBuffer;
-			int startPosition = readBuffer.find_first_of("res_mods/") + 9;
-			int endPosition = readBuffer.find_last_of("</Path>") - 7;
+			const int startPosition = read_buffer.find_first_of("res_mods/") + 9;
+			const int endPosition = read_buffer.find_last_of("</Path>") - 7;
 
 			for (int n = startPosition; n <= endPosition; ++n) {
-				returnBuffer += readBuffer[n];
+				returnBuffer += read_buffer[n];
 			}
 			reader.close();
 			return returnBuffer;
@@ -106,25 +106,24 @@ string Utils::getWOWSversion() {
 	return "Error";
 }
 
-void Utils::renameFile(string pre, string post) {
-	runCMD("ren \"" + pre + "\" " + getRawFileName(post));
+void Utils::RenameFile(string old_name, string new_name) {
+	RunCommand("ren \"" + old_name + "\" " + GetRawFileName(new_name));
 }
 
-void Utils::showPercentage(int current, int total, string message) {
-	
-	system("cls");
+void Utils::PercentageBar(int current, int total) {
 		
 		const int barLength = 50;
-		const int leftPercent  = double(current + 1) / double(total) * barLength;
-		const int rightPercent = barLength - leftPercent; 
+		const int leftPercent  = double(current) / double(total) * barLength;
+		const int rightPercent = barLength - leftPercent;
+		string print_buffer = "\r[";
 
-		printf("%s\n[", message.c_str());
-		current++;
+		for (int i = 0; i <  leftPercent-1; i++)        print_buffer.append("=");
+		print_buffer.append(">");
+		for (int i = 0; i <  rightPercent; i++)        print_buffer.append(" ");
 
-		for (int i = 0; i <  leftPercent ; i++)        printf(">");
-		for (int i = 0; i <  rightPercent; i++)        printf(" ");
-		
-		printf("] %d / %d", current, total);
-		
-		if (current == total) printf("\n\n\n");
+		print_buffer.append(string("] ") + std::to_string(current) + string("/") + std::to_string(total));
+
+		if (current == total) print_buffer.append("\n");
+		printf(print_buffer.c_str());
+
 }
