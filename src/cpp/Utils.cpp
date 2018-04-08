@@ -1,14 +1,43 @@
-
+#define _SCL_SECURE_NO_WARNINGS
 #include "Utils.h"
 #include "includes.h"
 
-string Utils::GetRawFileName(string &fullPath) {
+bool visualizing = true;
+
+vector<string> Utils::ReadFile(string filename) {
+
+	vector<string> return_buffer;
+	ifstream reader;
+	string read_buffer;
+
+	//Replace Unix's backslashes with Windows' slashes
+	for (int i = 0; i < filename.size(); ++i) {
+		if (filename[i] == '/') { 
+			filename[i] = '\\';
+		}
+	}
+
+	//Check file access, return an empty list if failed
+	reader.open(filename.c_str());
+	if (!reader.is_open()) return {};
+
+	//Start reading
+	while (getline(reader, read_buffer)) {
+		return_buffer.push_back(read_buffer);
+	}
+
+	reader.close();
+
+	return return_buffer;
+}
+
+string Utils::GetRawFileName(string full_path) {
     int startPosition = 0;
-    int endPosition = fullPath.length()-1;
+    int endPosition = full_path.length()-1;
     string returnBuffer;
 
-    size_t slashPosition = fullPath.find_last_of('\\');
-    size_t backSlashPosition = fullPath.find_last_of('/');
+    size_t slashPosition = full_path.find_last_of('\\');
+    size_t backSlashPosition = full_path.find_last_of('/');
 
     if(slashPosition != string::npos) {
         startPosition = int(slashPosition)+1;
@@ -17,29 +46,32 @@ string Utils::GetRawFileName(string &fullPath) {
         startPosition = int(backSlashPosition)+1;
     }
     for(int n = startPosition; n <= endPosition;++n) {
-        returnBuffer += fullPath[n];
+        returnBuffer += full_path[n];
     }
 
     return returnBuffer;
 }
 
 //From CSDN, rewritten for a reverse usage (originally for iterate files)
-void Utils::GetFolderList(string path, vector<string> & folder_list) {
+vector<string> Utils::GetFolderList(string path) {
 
 	struct _finddata_t file_info;
 	const string workingPath = path + R"(\*)";
 	int folderCount = 0;
 	long hFile = _findfirst(workingPath.c_str(), &file_info);
-	
+	vector<string> return_buffer;
+
+
 	do {
 		if (file_info.attrib & _A_SUBDIR) {
 			folderCount ++;
 			if (folderCount <= 2) continue; //Skip if it's parent-folder or current folder
-			else folder_list.push_back(file_info.name);
+			else return_buffer.push_back(file_info.name);
 		}
 
 	} while (_findnext(hFile, &file_info) == 0);
 
+	return return_buffer;
 }
 
 //From MSDN
@@ -103,7 +135,7 @@ string Utils::GetWowsVersion() {
 		}
 	}
 	reader.close();
-	return "Error";
+	return string();
 }
 
 void Utils::RenameFile(string old_name, string new_name) {
@@ -112,6 +144,8 @@ void Utils::RenameFile(string old_name, string new_name) {
 
 void Utils::PercentageBar(int current, int total) {
 		
+	if (!visualizing) return;
+
 		const int barLength = 50;
 		const int leftPercent  = double(current) / double(total) * barLength;
 		const int rightPercent = barLength - leftPercent;
@@ -126,4 +160,59 @@ void Utils::PercentageBar(int current, int total) {
 		if (current == total) print_buffer.append("\n");
 		printf(print_buffer.c_str());
 
+}
+
+bool Utils::IsFileExist(string filename) {
+	ifstream reader;
+	bool result;
+
+	reader.open(filename);
+	result = reader.is_open();
+	reader.close();
+
+	return result;
+	
+}
+
+void Utils::CopyFiles(string source, string target) {
+
+    //RunCommand("robocopy " + source + " " + target + " /is /e /MT:8");
+	RunCommand("robocopy \"" + source + "\" \"" + target + "\" /e /MT:8 /NFL /NDL /NJH /NJS /nc /ns /np");
+}
+
+void Utils::Report(MsgType type, string message) {
+	
+	if (!visualizing) {return;}
+
+	switch (type) {
+	case INFO: 
+		printf("[INFO]    %s\n",message.c_str());
+		break;
+	case ERR:  
+		printf("[ERROR]   %s\n", message.c_str());
+		break;
+	case WARNING :
+		printf("[WARNING] %s\n", message.c_str());
+		break;
+	case PLAIN :
+		printf(message.c_str());
+	}
+}
+
+bool Utils::WriteToFile(string filename, vector<string> content) {
+	ofstream writer;
+	writer.open(filename);
+	
+	if (!writer.is_open()) return false;
+	
+	for (string current_line : content) {
+		writer << current_line + "\n";
+	}
+
+	writer.close();
+	return true;
+}
+
+void Utils::SetVisualizing(bool value) {
+	visualizing = value;
 }

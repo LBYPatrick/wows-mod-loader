@@ -1,2 +1,15 @@
 # wows-mod-loader
-一个用来转换多玩战舰世界(国服)MOD到steam服(不限区)的简单小程序, 还可以载入自定义MOD
+
+
+Make duowan Wargaming mods working with Wargaming's own clients and load your favorite Wargaming mods in a more elegant way. 
+
+Tested on World of Warships, supports world of tanks / aircrafts theoretically.
+
+## Usage
+
+1. Put this program in the root game folder
+2. Create sub folders for your mods and put these folders under ``res_custom`` folder
+3. Run the program! (It would auto-detect Duowan mods and convert)
+
+For CLI options, please discover by yourselves, I am just too tired today for writing a manual for it. It would be up soon.
+

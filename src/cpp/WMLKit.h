@@ -8,15 +8,11 @@ struct FileInfo {
     string postPath;
 };
 
-class WMLKit {
-private:
-	void AddFile(FileInfo i);
-	string RemoveVersionNumber(string originPath);
-public:
-	bool visualizing = true;
-	vector<FileInfo> file_list;
-	void ReadFileList(string filemapPath);
+namespace WMLKit {
+
+	vector<FileInfo> ReadDuowanFileList(string filemap_path);
+	string RemoveVersionNumber(string origin_path);
+	void SetVisualizing(bool value);
 	void MountCustomMods();
 	void MountDuoWanMods();
-	
 };

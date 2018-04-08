@@ -12,12 +12,14 @@ int main(int argc,char*const argv[]) {
 		"--duowan-only",
 		"-d",
 		"--custom-only",
-		"-c"
+		"-c",
+		"-f",
+		"--full"
 	};
-	WMLKit object;
 	string param_buffer;
 	boolean is_duowan_needed = false;
 	boolean is_custom_needed = false;
+	boolean is_full_load = false;
 
 	for(int i = 0; i < argc; ++i) {
 		param_buffer = argv[i];
@@ -30,7 +32,7 @@ int main(int argc,char*const argv[]) {
 					case 1:
 					case 2:
 					case 3:
-						object.visualizing = false;
+						WMLKit::SetVisualizing(false);
 					    is_param_match = true;
 						break;
 					case 4:
@@ -43,6 +45,11 @@ int main(int argc,char*const argv[]) {
 						is_custom_needed = true;
 						is_param_match = true;
 						break;
+					case 8:
+					case 9:
+						is_full_load = true;
+						is_param_match = true;
+
 					default: break;
 				}
 				if (is_param_match) break;
@@ -50,18 +57,24 @@ int main(int argc,char*const argv[]) {
 		}
 	}
 
+	if (Utils::GetWowsVersion().size() == 0) {
+		Utils::Report(MsgType::ERR, "Failed to get World Of Warships version number");
+		return 1;
+	}
+
+	if(is_full_load) Utils::RunCommand("rd /q /s res_mods");
+
 	if(!is_duowan_needed && !is_custom_needed) {
-		Utils::RunCommand("rd /q /s res_mods");
 		is_duowan_needed = true;
 		is_custom_needed = true;
 	}
 
 	if(is_duowan_needed) {
-		object.MountDuoWanMods();
+		WMLKit::MountDuoWanMods();
 	}
 
 	if(is_custom_needed) {
-		object.MountCustomMods();
+		WMLKit::MountCustomMods();
 	}
 
 	return 0;
