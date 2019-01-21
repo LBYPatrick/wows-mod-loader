@@ -1,4 +1,38 @@
-\.vscode/*
-cmake-build-debug/*
-src/\.vscode/*
-\.idea/
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Other Junk
+
+* * /.vs
+vs_project/MUSASHI/x64/
+vs_project/MUSASHI/.vs/

@@ -1,0 +1,1 @@
+g++ -static -w -std=c++11 src/cpp/*.cpp -o bin/musashi

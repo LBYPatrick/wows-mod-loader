@@ -1,18 +1,15 @@
 #pragma once
 
-#include "includes.h"
-#include "Utils.h"
+#include "include.hpp"
 
-struct FileInfo {
-    string prePath;
-    string postPath;
-};
 
-namespace WMLKit {
+
+namespace core {
 
 	vector<FileInfo> ReadDuowanFileList(string filemap_path);
 	string RemoveVersionNumber(string origin_path);
 	void SetVisualizing(bool value);
 	void MountCustomMods();
 	void MountDuoWanMods();
+	bool MountMods(ModMountType type);
 };

@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{A2B13762-6B8C-4ED4-9C85-5CC33C96B0E9}</ProjectGuid>
-    <RootNamespace>wowsmodloader</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{E1320B17-5BC4-4C04-815E-41D869E78723}</ProjectGuid>
+    <RootNamespace>MUSASHI</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -115,14 +115,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\cpp\includes.h" />
-    <ClInclude Include="..\..\src\cpp\Utils.h" />
-    <ClInclude Include="..\..\src\cpp\WMLKit.h" />
+    <ClCompile Include="..\..\src\cpp\core.cpp" />
+    <ClCompile Include="..\..\src\cpp\include.cpp" />
+    <ClCompile Include="..\..\src\cpp\main.cpp" />
+    <ClCompile Include="..\..\src\cpp\util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\cpp\main.cpp" />
-    <ClCompile Include="..\..\src\cpp\Utils.cpp" />
-    <ClCompile Include="..\..\src\cpp\WMLKit.cpp" />
+    <ClInclude Include="..\..\src\cpp\core.hpp" />
+    <ClInclude Include="..\..\src\cpp\include.hpp" />
+    <ClInclude Include="..\..\src\cpp\util.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

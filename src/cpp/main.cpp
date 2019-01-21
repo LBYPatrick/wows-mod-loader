@@ -1,6 +1,6 @@
-#include "includes.h"
-#include "Utils.h"
-#include "WMLKit.h"
+#include "include.hpp"
+#include "util.hpp"
+#include "core.hpp"
 
 int main(int argc,char*const argv[]) {
 
@@ -17,9 +17,9 @@ int main(int argc,char*const argv[]) {
 		"--full"
 	};
 	string param_buffer;
-	boolean is_duowan_needed = false;
-	boolean is_custom_needed = false;
-	boolean is_full_load = false;
+	bool is_duowan_needed = false;
+	bool is_custom_needed = false;
+	bool is_full_load = false;
 
 	for(int i = 0; i < argc; ++i) {
 		param_buffer = argv[i];
@@ -32,7 +32,7 @@ int main(int argc,char*const argv[]) {
 					case 1:
 					case 2:
 					case 3:
-						WMLKit::SetVisualizing(false);
+						core::SetVisualizing(false);
 					    is_param_match = true;
 						break;
 					case 4:
@@ -57,12 +57,12 @@ int main(int argc,char*const argv[]) {
 		}
 	}
 
-	if (Utils::GetWowsVersion().size() == 0) {
-		Utils::Report(MsgType::ERR, "Failed to get World Of Warships version number");
+	if (util::GetWowsVersion().size() == 0) {
+		util::Report("ERROR", "Failed to get World of Warships version number");
 		return 1;
 	}
 
-	if(is_full_load) Utils::RunCommand("rd /q /s res_mods");
+	if(is_full_load) util::RunCMD("rd /q /s res_mods");
 
 	if(!is_duowan_needed && !is_custom_needed) {
 		is_duowan_needed = true;
@@ -70,11 +70,11 @@ int main(int argc,char*const argv[]) {
 	}
 
 	if(is_duowan_needed) {
-		WMLKit::MountDuoWanMods();
+		core::MountDuoWanMods();
 	}
 
 	if(is_custom_needed) {
-		WMLKit::MountCustomMods();
+		core::MountCustomMods();
 	}
 
 	return 0;
