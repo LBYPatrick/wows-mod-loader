@@ -35,7 +35,7 @@ struct SortItem {
 };
 
 struct YAML {
-	int level;
+	size_t level;
 	string left;
 	string right;
 };

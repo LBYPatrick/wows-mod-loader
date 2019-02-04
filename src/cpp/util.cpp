@@ -10,13 +10,14 @@ vector<string> util::ReadFile(string path) {
 	string long_buffer;
 	char buffer[READ_BUFFER_SIZE];
 
+#ifdef _WIN32 
+
 	//Convert Unix backslashes to Windows slashes
 	for (auto & i : path) {
 		if (i == '/') {
 			i = '\\';
 		}
 	}
-#ifdef _WIN32 
 
 	auto result = fopen_s(&handler, path.c_str(), "r");
 
@@ -164,14 +165,14 @@ bool util::IsFileExist(string path) {
 	string long_buffer;
 	char buffer[READ_BUFFER_SIZE];
 
-	//Convert Unix backslashes to Windows slashes
+#ifdef _WIN32 
+
+		//Convert Unix backslashes to Windows slashes
 	for (auto & i : path) {
 		if (i == '/') {
 			i = '\\';
 		}
 	}
-
-#ifdef _WIN32 
 
 	auto result = fopen_s(&handler, path.c_str(), "r");
 
@@ -217,29 +218,30 @@ bool util::WriteToFile(string path, vector<string> & content) {
 
 	FILE*handler;
 
-	//Convert Unix backslashes to Windows slashes
+#ifdef _WIN32
+
+		//Convert Unix backslashes to Windows slashes
 	for (auto & i : path) {
 		if (i == '/') {
 			i = '\\';
 		}
 	}
 
-#ifdef _WIN32
-
 	auto result = fopen_s(&handler, path.c_str(), "w");
 
 	if (result == EINVAL) return false; //Fail to open file
+	
 #else
 
 	handler = fopen(path.c_str(), "w");
 
-	if (handler) return false; //Fail to open file
+	if (!handler) return false; //Fail to open file
 #endif
 
 	string write_buffer;
 
 	for (auto & i : content) {
-		write_buffer += i;
+		write_buffer += i + '\n';
 	}
 
 	fputs(write_buffer.c_str(), handler);
@@ -277,24 +279,28 @@ void util::QuickSort::Sort(vector<SortItem> &arr, size_t low, size_t high) {
  */
 
 vector<size_t> util::QuickSort::Sort(vector<long long> &arr, size_t low, size_t high) {
-	vector<SortItem> new_arr;
-	vector<size_t> r;
 
-	//Reserve space for efficiency
-	new_arr.reserve(high - low + 1);
-	r.reserve(high - low + 1);
+    auto * new_arr = new vector<SortItem>();
 
-	for (size_t i = low; i <= high; ++i) {
-		new_arr.push_back({ i, arr[i] });
-	}
+    vector<size_t> r;
 
-	Sort(new_arr, low, high);
+    //Reserve space for efficiency
+    new_arr->reserve(high - low + 1);
+    r.reserve(high - low + 1);
 
-	for (auto &element : new_arr) {
-		r.push_back(element.old_index);
-	}
+    for (size_t i = low; i <= high; ++i) {
+        new_arr->push_back({i, arr[i]});
+    }
 
-	return r;
+    Sort(*new_arr, low, high);
+
+    for (auto &element : *new_arr) {
+        r.push_back(element.old_index);
+    }
+
+    delete new_arr;
+
+    return r;
 }
 
 /**
