@@ -28,3 +28,14 @@ enum ModMountType {
 	CUSTOM_ONLY,
 	BOTH
 };
+
+struct SortItem {
+	size_t old_index;
+	long long key;
+};
+
+struct YAML {
+	int level;
+	string left;
+	string right;
+};

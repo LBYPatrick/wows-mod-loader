@@ -19,4 +19,17 @@ namespace util {
 	void SetVisualizing(bool value);
 	string SubString(string & str, int left, int stop);
 	void CopyFiles(string source, string target);
+	YAML GetYaml(string line);
+
+	class QuickSort {
+	public:
+
+		static void Sort(vector<SortItem> &arr, size_t low, size_t high);
+		static vector<size_t> Sort(vector<long long> & arr, size_t low, size_t high);
+		static vector<size_t> Sort(vector<long long> & arr);
+
+	private:
+		static size_t Partition(vector<SortItem> &arr, size_t low, size_t high);
+	};
+
 };

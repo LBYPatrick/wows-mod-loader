@@ -23,8 +23,8 @@ vector<string> util::ReadFile(string path) {
 	if (result == EINVAL) {
 		return r;
 	}
-#elif
-	handler = fopen(path.c_str(), 'r');
+#else
+	handler = fopen(path.c_str(), "r");
 
 	if (!handler) {
 		return r;
@@ -178,8 +178,8 @@ bool util::IsFileExist(string path) {
 	if (result == EINVAL) {
 		return false;
 	}
-#elif
-	handler = fopen(path.c_str(), 'r');
+#else
+	handler = fopen(path.c_str(), "r");
 
 	if (!handler) {
 		return false;
@@ -229,9 +229,9 @@ bool util::WriteToFile(string path, vector<string> & content) {
 	auto result = fopen_s(&handler, path.c_str(), "w");
 
 	if (result == EINVAL) return false; //Fail to open file
-#elif
+#else
 
-	handler = fopen(filename.c_str(), "w");
+	handler = fopen(path.c_str(), "w");
 
 	if (handler) return false; //Fail to open file
 #endif
@@ -260,4 +260,104 @@ string util::SubString(string & str, int left, int stop) {
 	if (stop > str.length()) stop = str.length();
 
 	return str.substr(left, length);
+}
+
+void util::QuickSort::Sort(vector<SortItem> &arr, size_t low, size_t high) {
+	if (low < high) {
+		size_t pivot = Partition(arr, low, high);
+		Sort(arr, low, pivot);
+		Sort(arr, pivot + 1, high);
+	}
+}
+
+/**
+ * Overloaded Sort method #1: When user passes a raw size_t array with bounds
+ * @param arr
+ * @return vector containing indexes of sorted items
+ */
+
+vector<size_t> util::QuickSort::Sort(vector<long long> &arr, size_t low, size_t high) {
+	vector<SortItem> new_arr;
+	vector<size_t> r;
+
+	//Reserve space for efficiency
+	new_arr.reserve(high - low + 1);
+	r.reserve(high - low + 1);
+
+	for (size_t i = low; i <= high; ++i) {
+		new_arr.push_back({ i, arr[i] });
+	}
+
+	Sort(new_arr, low, high);
+
+	for (auto &element : new_arr) {
+		r.push_back(element.old_index);
+	}
+
+	return r;
+}
+
+/**
+ * Overloaded Sort method #1: When user passes a raw size_t array without bounds
+ * @param arr
+ * @return vector containing indexes of sorted items
+ */
+vector<size_t> util::QuickSort::Sort(vector<long long> &arr) {
+	return Sort(arr, 0, arr.size() - 1);
+}
+
+/**
+ * Sort using Hoare Partition Scheme
+ * @param arr  Array (By reference)
+ * @param low  lower index.
+ * @param high High index.
+ * @return Index of pivot
+ */
+size_t util::QuickSort::Partition(vector<SortItem> &arr, size_t low, size_t high) {
+	long long pivot = arr[low].key;
+	size_t left_index = low - 1,
+		right_index = high + 1;
+
+	while (true) {
+		do {
+			left_index += 1;
+		} while (arr[left_index].key < pivot);
+
+		do {
+			right_index -= 1;
+		} while (arr[right_index].key > pivot);
+
+		if (left_index >= right_index) {
+			return right_index;
+		}
+
+		std::swap(arr[left_index], arr[right_index]);
+	}
+}
+
+YAML util::GetYaml(string line) {
+	YAML out;
+
+	if (line.find(':') == -1) {
+		return YAML();
+	}
+
+	out.level = line.find_first_not_of(' ');
+	out.left = SubString(line, out.level, line.find(':'));
+	out.right = SubString(line, line.find(':') + 1, line.find_last_not_of(' ') + 1);
+
+	//Remove Trailing & starting spaces
+	out.left = SubString(out.left, 0, out.left.find_last_not_of(' ') + 1);
+	out.right = SubString(out.right, out.right.find_first_not_of(' '), out.right.size());
+
+
+	if (out.left.find('\"') != -1) {
+		out.left = SubString(out.left, 1, out.left.size() - 1);
+	}
+
+	if (out.right.find('\"') != -1) {
+		out.right = SubString(out.right, 1, out.right.size() - 1);
+	}
+
+	return out;
 }
