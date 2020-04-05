@@ -1,5 +1,8 @@
-# wows-mod-loader
+# **WARNING**
 
+This repository has been deprecated, please go to [my new repository](https://github.com/LBYPatrick/World-Of-Waifus).
+
+# wows-mod-loader
 
 Make duowan Wargaming mods working with Wargaming's own clients and load your favorite Wargaming mods in a more elegant way. 
 
